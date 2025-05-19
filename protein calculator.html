@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>연구소 단백질 요구시간 계산기 (Research Protein Requirement Calculator)</title>
+<style>
+  body { font-family: Arial, sans-serif; padding: 20px; background: #f9f9f9; }
+  h1 { color: #333; }
+  label { display: block; margin: 10px 0 5px; }
+  input[type="number"] { width: 100%; padding: 8px; box-sizing: border-box; margin-bottom: 10px; }
+  button { margin-top: 15px; padding: 10px 15px; font-size: 16px; cursor: pointer; }
+  #result { margin-top: 20px; font-size: 18px; font-weight: bold; color: #007700; white-space: pre-line; }
+  .building-input { margin-bottom: 15px; }
+</style>
+</head>
+<body>
+
+<h1>연구소 단백질 요구시간 계산기 (Research Protein Requirement Calculator)</h1>
+
+<div id="buildings">
+  <div class="building-input">
+    <label for="building1">단백질농장 1 시간당 생산량 (Protein Farm 1 Hourly Production):</label>
+    <input type="number" id="building1" value="8640" min="0" />
+  </div>
+  <div class="building-input">
+    <label for="building2">단백질농장 2 시간당 생산량 (Protein Farm 2 Hourly Production):</label>
+    <input type="number" id="building2" value="8640" min="0" />
+  </div>
+  <div class="building-input">
+    <label for="building3">단백질농장 3 시간당 생산량 (Protein Farm 3 Hourly Production):</label>
+    <input type="number" id="building3" value="8640" min="0" />
+  </div>
+  <div class="building-input">
+    <label for="building4">단백질농장 4 시간당 생산량 (Protein Farm 4 Hourly Production):</label>
+    <input type="number" id="building4" value="8640" min="0" />
+  </div>
+  <div class="building-input">
+    <label for="building5">단백질농장 5 시간당 생산량 (Protein Farm 5 Hourly Production):</label>
+    <input type="number" id="building5" value="8640" min="0" />
+  </div>
+</div>
+
+<label for="neededProtein">필요한 단백질 개수 (Required Protein Amount):</label>
+<input type="number" id="neededProtein" value="1000000" min="0" />
+
+<button onclick="calculateTime()">계산하기 (Calculate)</button>
+
+<div id="result"></div>
+
+<script>
+function calculateTime() {
+  let totalPerHour = 0;
+  for (let i = 1; i <= 5; i++) {
+    const val = Number(document.getElementById('building' + i).value);
+    if (val < 0 || isNaN(val)) {
+      document.getElementById('result').innerText = `단백질농장 ${i} 생산량은 0 이상의 숫자여야 합니다. (Protein Farm ${i} production must be a non-negative number.)`;
+      return;
+    }
+    totalPerHour += val;
+  }
+
+  const needed = Number(document.getElementById('neededProtein').value);
+  if (needed < 0 || isNaN(needed)) {
+    document.getElementById('result').innerText = '필요한 단백질 개수는 0 이상의 숫자여야 합니다. (Required protein amount must be a non-negative number.)';
+    return;
+  }
+
+  if (totalPerHour === 0) {
+    document.getElementById('result').innerText = '생산량이 0이므로 필요한 단백질을 만들 수 없습니다. (Total production is zero, cannot reach required protein amount.)';
+    return;
+  }
+
+  const totalNeededHours = needed / totalPerHour;
+  const hours = Math.floor(totalNeededHours);
+  const minutes = Math.ceil((totalNeededHours - hours) * 60);
+
+  document.getElementById('result').innerText =
+    `필요한 단백질 ${needed.toLocaleString()} 개 달성 예상 시간: ${hours} 시간 ${minutes} 분\n(Estimated time to reach required protein: ${hours} hours ${minutes} minutes)`;
+}
+</script>
+
+</body>
+</html>
